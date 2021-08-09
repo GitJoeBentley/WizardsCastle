@@ -31,7 +31,7 @@ public:
 
 private:
     char abbreviation;
-    bool explored = false; // = false;  // change this to false
+    bool explored = false; // = true;  // change this to true for debugging
     unsigned char curse = 0;             // curse = 0 means no curse
     bool hasRunestaff = false;
     bool hasOrbOfZot = false;

@@ -498,16 +498,22 @@ short Player::getFlares() const
 {
     return flares;
 }
-short Player::getGold() const
+int Player::getGold() const
 {
     return gold;
+}
+
+void Player::setGold(int amount)
+{
+    gold = amount;
 }
 
 short Player::addFlares(short howmany)
 {
     return flares += howmany;
 }
-short Player::addGold(short howmany)
+
+int Player::addGold(int howmany)
 {
     return gold += howmany;
 }

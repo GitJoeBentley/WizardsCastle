@@ -17,66 +17,94 @@ Command::Command(Player& ch, Castle& cast) : me(ch), castle(cast)
 // Return true if game ends
 bool Command::get()
 {
+    char cmd;  // command as 1 char
     Location newLocation;
     Location currentLocation;
+
     if (rand() % 5 == 0) randomMessage();
     cout << "Enter your command : ";
     cin >> command;
     command[0] = toupper(command[0]);
     if (command.size() > 2) command.resize(2);
     if (command.size() > 1) command[1] = toupper(command[1]);
-    lastCommand = command[0];
+
     if (command == "DR")
+        cmd = 'd';  // use 'd' for drink
+    else
+        cmd = command[0];
+    lastCommand = cmd;
+
+    // check for curse of the Leech or Forgetfulness
+    if (strchr("NSEWUP",cmd))
     {
-        lastCommand = 'd';
+        // check for curse of the Leech
+        if (me.hasCurse(2))
+        {
+            me.addGold(-rnd(5));
+            if (me.getGold() < 0) me.setGold(0);
+        }
+        // check for curse of Forgetfulness
+        if (me.hasCurse(3))
+        {
+            castle.getRoom(rand()%8,rand()%8,rand()%8)->setExplored(false);
+        }
+    }
+
+    switch (cmd)
+    {
+    case 'd':
         if (rm() == 'P') me.drink();
         else cout << "** No pool here\n\n";
-    }
-    else if (strchr("NSEW",command[0]))
-    {
+        break;
+    case 'N':
+    case 'S':
+    case 'E':
+    case 'W':
         currentLocation = me.getLocation();
 
         me.incrementTurns();
 
-        newLocation = me.move(command[0]);
+        newLocation = me.move(cmd);
         if (newLocation == Player::ExitCastle) return true;  // exit castle?
         while (currentLocation != newLocation)
         {
             currentLocation = newLocation;
             newLocation = reactToNewRoom();
         }
-    }
-    else if (command[0] == 'U')
-    {
+        break;
+    case 'U':
         if (rm() != 'U')
             cout << "\n** There are no stairs going up from here!\n\n";
         else me.goUp();
         reactToNewRoom();
-    }
-    else if (command[0] == 'D')
-    {
+        break;
+    case 'D':
         if (rm() != 'D')
             cout << "\n** There are no stairs going down from here!\n\n";
         else me.goDown();
         reactToNewRoom();
-    }
-    else if (command[0] == 'H') help();
-    else if (command[0] == 'L')
-    {
+        break;
+    case 'H':
+        help();
+        break;
+    case 'L':
         if (me.hasLamp()) lamp();
         else cout << "** You don't have a lamp, " << me.getRace() << "!\n\n";
-    }
-    else if (command[0] == 'M') map();
-    else if (command[0] == 'F') flare();
-    else if (command[0] == 'G')
-    {
+        break;
+    case 'M':
+        map();
+        break;
+
+    case 'F':
+        flare();
+        break;
+    case 'G':
         if (rm() == 'O')
             gaze();
         else
             cout << "\n** It's hard to gaze without an orb!\n\n";
-    }
-    else if (command[0] == 'O')
-    {
+        break;
+    case 'O':
         if (rm() == 'B') me.openBook();
         else if (rm() == 'C')
         {
@@ -87,9 +115,8 @@ bool Command::get()
             }
         }
         else cout << "\n** The only thing you opened was your big mouth!\n\n";
-    }
-    else if (command[0] == 'T')  // teleport
-    {
+        break;
+    case 'T':
         cout << endl;
         lastCommand = 'T';
         if (me.hasRunestaff())
@@ -113,17 +140,15 @@ bool Command::get()
         {
             cout << "** You can't teleport without the Runestaff!\n\n";
         }
-    }
-    else if (command[0] == 'Q')
-    {
-        quit();
-        return true;
-    }
-    else
-    {
+        break;
+    case 'Q':
+        if (quit())        return true;
+        else break;
+    default:
         cout << "\n** Silly " << me.getRace() << ", that wasn't a valid command!" << endl << endl;
-    }
+    }   // end of switch
 
+    // check for death
     if (ST() <= 0 or IQ() <= 0)
     {
         string deathCause;
@@ -330,7 +355,7 @@ void Command::randomMessage() const
     cout << text << endl << endl;
 }
 
-void Command::quit()
+bool Command::quit()
 {
     string yn;
     cout << "\nDo you really want to quit now? ";
@@ -339,7 +364,7 @@ void Command::quit()
     if (yn[0] != 'Y')
     {
         cout << "\nThen don't say that you do!\n";
-        return;
+        return false;
     }
     else
     {
@@ -358,6 +383,7 @@ void Command::quit()
             cout << "And it took you " << me.getTurns() << " turns!\n\n";
         }
     }
+    return true;
 }
 
 // return pointer to current room
@@ -381,7 +407,7 @@ Location Command::reactToNewRoom()
         curse = currentRoom()->getCurse();
         if (curse)
         {
-            cout << "You are cursed!!!  ";
+            cout << "You are cursed!!!  \n\n";
             for (size_t i = 1; i <=3; i++)
             {
                 if (curse == i && !me.hasTreasure(2*i - 1))
@@ -395,6 +421,10 @@ Location Command::reactToNewRoom()
         break;
     case 'S':
         me.setLevel((me.getLevel()+1)%8);
+        currentRoom()->setExplored();
+        break;
+    case 'D':
+    case 'U':
         currentRoom()->setExplored();
         break;
     case 'B':
@@ -594,8 +624,8 @@ Location Command::monster()
                 hit = false;
                 if (me.getWeapon()== 0)
                 {
-                   cout << "** Pounding on a " << name << " will not hurt it!\n\n";
-                   cantAttack = true;
+                    cout << "** Pounding on a " << name << " will not hurt it!\n\n";
+                    cantAttack = true;
                 }
                 else if (me.isBookStuckToHands())
                 {

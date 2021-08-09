@@ -180,6 +180,11 @@ void Castle::createItems()
         for (short num = 0; num < 3; ++num) getRandomUnassignedRoom(level) = new Book;
         for (short num = 0; num < 3; ++num) getRandomUnassignedRoom(level) = new Vendor;
     }
+    // For debugging
+    //getRoom(0,0,0) = new Sinkhole;
+    //getRoom(0,1,1) = new Sinkhole;
+    //getRoom(1,0,0) = new Flare;
+    //getRoom(1,1,1) = new Gold;
 }
 
 void Castle::createTreasures()
@@ -192,6 +197,10 @@ void Castle::createTreasures()
 
 void Castle::createCurses()
 {
+    // debugging
+    //getRoom(0,0,0) = new Empty(1);
+    //getRoom(0,1,1) = new Empty(2);
+    //getRoom(0,2,2) = new Empty(3);
     for (short curs = 0; curs < 4; ++curs)
     {
         getRandomUnassignedRoom()= new Empty(curs);
@@ -200,7 +209,7 @@ void Castle::createCurses()
 
 void Castle::printCastleContents() const
 {
-    ofstream fout("c:/temp/castlecontents.txt");
+    ofstream fout("castlecontents.txt");
     for (short l = 0; l < 8; ++l)
     {
         fout << "Level " << l << endl;

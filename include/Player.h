@@ -69,9 +69,10 @@ public:
     bool getHasOrbOfZot() const;
     bool hasLamp() const;
     short getFlares() const;
-    short getGold() const;
+    int getGold() const;
+    void setGold(int amount);
     short addFlares(short howmany);
-    short addGold(short howmany);
+    int addGold(int howmany);
     void stickBookToHands();
     void dissolveBookStuckToHands() { bookStuckToHands = false; }
     void damage(short x);
@@ -116,7 +117,7 @@ private:
     short strength;
     short dexterity;
     short intelligence = 8;
-    short gold = 60;
+    int gold = 60;
     short flares = 0;
     short turns = 0;
     short armor;

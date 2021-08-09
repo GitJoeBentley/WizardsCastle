@@ -23,7 +23,7 @@ public:
     void gaze();
     void openChest();
     void setRoomExplored() const;
-    void quit();
+    bool quit();
 
     // These are helper, frequently-used accessor functions
     std::string race() const;
