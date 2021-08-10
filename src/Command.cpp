@@ -24,9 +24,9 @@ bool Command::get()
     if (rand() % 5 == 0) randomMessage();
     cout << "Enter your command : ";
     cin >> command;
-    command[0] = toupper(command[0]);
+    command[0] = static_cast<char>(toupper(command[0]));
     if (command.size() > 2) command.resize(2);
-    if (command.size() > 1) command[1] = toupper(command[1]);
+    if (command.size() > 1) command[1] = static_cast<char>(toupper(command[1]));
 
     if (command == "DR")
         cmd = 'd';  // use 'd' for drink
@@ -199,7 +199,7 @@ void Command::lamp() const
         char direction;
         cout << "\nWhere do you want to shine the lamp (N,S,E,W)? ";
         cin >> direction;
-        direction = toupper(direction);
+        direction = static_cast<char>(toupper(direction));
         cout << endl;
         if (string("NSEW").find(direction) == string::npos)
         {
@@ -282,7 +282,7 @@ void Command::gaze()
         {
         case 1:
             cout << "yourself in a bloody heap!\n\n";
-            me.setStrength(ST()-(rand()%2 + 1));
+            me.setStrength(static_cast<unsigned char>(ST()-rnd(2)));
             clearRoom();
             break;
         case 2:
@@ -360,7 +360,7 @@ bool Command::quit()
     string yn;
     cout << "\nDo you really want to quit now? ";
     cin >> yn;
-    yn = toupper(yn[0]);
+    yn = static_cast<char>(toupper(yn[0]));
     if (yn[0] != 'Y')
     {
         cout << "\nThen don't say that you do!\n";
@@ -833,7 +833,7 @@ std::string Command::race() const
     return me.getRace();
 }
 
-short Command::gp() const
+int Command::gp() const
 {
     return me.getGold();
 }

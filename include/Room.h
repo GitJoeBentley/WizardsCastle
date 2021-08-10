@@ -6,8 +6,7 @@
 class Room
 {
 public:
-    Room(std::string arg1, char arg2, int curs = 0);
-    Room(char arg2, int curs = 0);
+    Room(char arg2, unsigned char curs = 0);
     virtual ~Room();
 
     bool isExplored() const;

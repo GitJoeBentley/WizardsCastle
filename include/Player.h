@@ -53,7 +53,7 @@ public:
     void setColumn(unsigned short);
     void setLevel(unsigned short);
     void setArmor(short type);
-    void setWeapon(int type);
+    void setWeapon(short type);
     short getStrength() const;
     short getDexterity() const;
     short getIntelligence() const;
@@ -140,6 +140,6 @@ private:
 };
 
 char yourchoice(const std::string& prompt, const std::string& allowable, const std::string& errormsg);
-int yourchoice(const std::string& prompt, int max);
+short yourchoice(const std::string& prompt, int max);
 
 #endif // PLAYER_H

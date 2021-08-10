@@ -1,6 +1,6 @@
 #include "Empty.h"
 
-Empty::Empty(int curs) : Room('.', curs)
+Empty::Empty(unsigned char curs) : Room('.', curs)
 {
    //ctor
 }

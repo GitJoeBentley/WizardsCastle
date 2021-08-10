@@ -68,12 +68,12 @@ void intro()
 char yourchoice(const string& prompt, const string& allowable, const string& errormsg)
 {
     bool ok = false;
-    char choice;
+    char choice = 'N';
     while (!ok)
     {
         cout << prompt;
         cin >> choice;
-        choice = toupper(choice);
+        choice = static_cast<char>(toupper(choice));
         if (allowable.find(choice)==string::npos)
         {
             cout << endl << errormsg << endl;
@@ -86,10 +86,10 @@ char yourchoice(const string& prompt, const string& allowable, const string& err
     return choice;
 }
 
-int yourchoice(const std::string& prompt, int max)
+short yourchoice(const std::string& prompt, int max)
 {
     bool ok = false;
-    int choice;
+    short choice = 0;
     string strchoice;
     cout << prompt;
     while (!ok)
@@ -97,7 +97,7 @@ int yourchoice(const std::string& prompt, int max)
         cin >> strchoice;
         try
         {
-            choice = stoi(strchoice);
+            choice = static_cast<short>(stoi(strchoice));
             if (choice < 0 or choice > max)
             {
                 cout << "\n** " << prompt;

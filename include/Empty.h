@@ -7,7 +7,7 @@
 class Empty : public Room
 {
 public:
-    Empty(int curs = 0);
+    Empty(unsigned char curs = 0);
     virtual ~Empty();
     std::string description() const
     {

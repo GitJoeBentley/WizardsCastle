@@ -82,7 +82,7 @@ Room*& Castle::getRandomUnassignedRoom(short level)
 
 Room*& Castle::replaceRandomEmptyRoom(Room* roomPtr, short level)
 {
-    short count = 0, l, r, c;
+    short count = 0, l = 0, r = 0, c = 0;
     while (count < 1)
     {
         l = (level == -1) ? rand() % 8 : level;
@@ -158,7 +158,7 @@ void Castle::createMonsters()
 {
     for (short level = 0; level < 8; ++level)
     {
-        for (auto monsterType = 1; monsterType <= 12; monsterType++)
+        for (short monsterType = 1; monsterType <= 12; monsterType++)
         {
             getRandomUnassignedRoom(level) = new Monster(monsterType);
         }
@@ -201,7 +201,7 @@ void Castle::createCurses()
     //getRoom(0,0,0) = new Empty(1);
     //getRoom(0,1,1) = new Empty(2);
     //getRoom(0,2,2) = new Empty(3);
-    for (short curs = 0; curs < 4; ++curs)
+    for (unsigned char curs = 0; curs < 4; ++curs)
     {
         getRandomUnassignedRoom()= new Empty(curs);
     }

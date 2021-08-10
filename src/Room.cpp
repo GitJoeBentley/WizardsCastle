@@ -2,8 +2,8 @@
 using std::ostream;
 using std::string;
 
-Room::Room(char arg2, int curs)
-    : abbreviation(arg2), curse(curs)
+Room::Room(char arg1, unsigned char arg2)
+    : abbreviation(arg1), curse(arg2)
 {}
 
 Room::~Room()

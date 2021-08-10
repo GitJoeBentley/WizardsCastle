@@ -19,7 +19,7 @@ const Location Player::ExitCastle(8,8,8);
 Player::Player(Castle& cast) : castle(cast)
 {
     char choice;
-    int nchoice;
+    short nchoice;
     int additional_points = 8;
     // int additional_points = 30;
     cout << "All right, bold one.\a" << endl;
@@ -152,10 +152,10 @@ std::string Player::getArmorAsString() const
 void Player::changeRace()
 {
     bool gotNewRace = false;
-    int newRace;
+    unsigned char newRace;
     while (!gotNewRace)
     {
-        newRace = rand() % 4 + 1;
+        newRace = static_cast<unsigned char>(rnd(4));
         if(race != newRace)
         {
             race = newRace;
@@ -240,7 +240,7 @@ void Player::setArmor(short type)
     armor_durability = type * 7;
 }
 
-void Player::setWeapon(int type)
+void Player::setWeapon(short type)
 {
     weapon = type;
 }
@@ -373,7 +373,7 @@ void Player::buyPotion(const string& type)
     if (type == "Strength") attributePtr = &strength;
     else if (type == "Dexterity") attributePtr = &dexterity;
     else attributePtr = &intelligence;
-    unsigned short amount;
+    unsigned short amount = 0;
 
     string prompt = "Do you want to buy a potion of " + type + " for 1000 GP's? ";
     char choice;
@@ -576,13 +576,13 @@ void Player::stickBookToHands()
 
 void Player::damage(short x)
 {
-    strength -= x - std::max(x - armor,0);
+    strength -= static_cast<short>(x - std::max(x - armor,0));
     armor_durability -= std::min(x,armor);
 }
 
 void Player::getPotion(short* attributePtr)
 {
-    int potion;
+    short potion;
     potion = rnd(6);
     if (potion + *attributePtr > 18) potion = 18 - *attributePtr;
     *attributePtr += potion;
@@ -603,7 +603,7 @@ void Player::buyLamp()
 
 std::pair<bool,char>  Player::attackVendor()
 {
-    char choice;
+    char choice = 0;
     bool attackContinues = true;
     bool playerGetFirstAttack = !(lethargic or blind or (dexterity < rnd(9)+rnd(9)) or weapon == 0 or bookStuckToHands);
     bool firstTimeThruLoop = true;
@@ -644,9 +644,7 @@ std::pair<bool,char>  Player::attackVendor()
                     }
                     if (vendorHP <= 0)
                     {
-                        int r = rnd(1000); // GP's
-                        // monsterDies = true;
-
+                        r = rnd(1000); // GP's
 
                         cout << "A vendor lies dead at your feet!\n\n"
                              << "You get all his wares :\n"
@@ -666,7 +664,7 @@ std::pair<bool,char>  Player::attackVendor()
 
                         attackContinues = false;
                         castle.clearRoom(getLevel(),getRow(),getColumn());
-                        return pair<bool,char>(true,0);
+                        return pair<bool,char>(true,choice);
                     }
                 }
                 else  // player's turn is skipped
@@ -679,7 +677,7 @@ std::pair<bool,char>  Player::attackVendor()
                 vendorTurn();
                 if (strength < 1)
                 {
-                    return pair<bool,char>(false,0);  // player dies
+                    return pair<bool,char>(false,choice);  // player dies
                 }
             }
             else if (choice == 'B')   // bribe
@@ -690,7 +688,7 @@ std::pair<bool,char>  Player::attackVendor()
                     vendorTurn();
                     if (strength < 1)
                     {
-                        return pair<bool,char>(false,0);  // player dies
+                        return pair<bool,char>(false,choice);  // player dies
                     }
                 }
                 else
@@ -705,7 +703,7 @@ std::pair<bool,char>  Player::attackVendor()
                             if (choice == 'Y')
                             {
                                 cout << "\nOk, just don't tell anyone else.\n\n";
-                                return pair<bool,char>(true,0);
+                                return pair<bool,char>(true,choice);
                             }
                             else
                             {
@@ -719,7 +717,7 @@ std::pair<bool,char>  Player::attackVendor()
             {
                 // vendor gets one last attack
                 vendorTurn();
-                if (strength <= 0) pair<bool,char>(false,0);  // player dies
+                if (strength <= 0) pair<bool,char>(false,choice);  // player dies
                 cout << "\nYou have escaped!\n\n";
                 prompt = "Do you want to go North, South, East, or West? ";
                 choice = yourchoice(prompt,"NSEW",string("** Don't press your luck, ")+getRace()+"!\n");
@@ -732,7 +730,7 @@ std::pair<bool,char>  Player::attackVendor()
         }
         firstTimeThruLoop = false;
     }
-    return pair<bool,char>(true,0);
+    return pair<bool,char>(true,choice);
 }
 
 void Player::vendorTurn()

@@ -27,7 +27,7 @@ public:
 
     // These are helper, frequently-used accessor functions
     std::string race() const;
-    short gp() const;
+    int gp() const;
     std::string armor() const;
 
 private:
